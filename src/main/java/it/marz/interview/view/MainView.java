@@ -1,7 +1,11 @@
 package it.marz.interview.view;
 
+import it.marz.interview.model.persona.Persona;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.List;
 
 public class MainView {
     private JFrame frame;
@@ -13,24 +17,53 @@ public class MainView {
     public MainView() {
         frame = new JFrame("Rubrica");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
-        frame.setLayout(new BorderLayout());
+        frame.setSize(800, 600);
+        frame.setLayout(new BorderLayout(10, 10));
+        frame.setLocationRelativeTo(null);
 
-        // Tabella per visualizzare le persone
+        //table creation
         String[] columnNames = {"Nome", "Cognome", "Telefono"};
-        table = new JTable(new Object[][]{}, columnNames);
-        frame.add(new JScrollPane(table), BorderLayout.CENTER);
+        DefaultTableModel model = new DefaultTableModel(new Object[][]{}, columnNames);
+        table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        table.setFillsViewportHeight(true);
 
-        // Pannello per i bottoni
-        JPanel panel = new JPanel();
-        newBtn = new JButton("Nuovo");
-        editBtn = new JButton("Modifica");
-        deleteBtn = new JButton("Elimina");
-        panel.add(newBtn);
-        panel.add(editBtn);
-        panel.add(deleteBtn);
+        //table scroller
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane, BorderLayout.CENTER);
 
-        frame.add(panel, BorderLayout.SOUTH);
+        //button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+        newBtn = createButton("Nuovo");
+        editBtn = createButton("Modifica");
+        deleteBtn = createButton("Elimina");
+        deleteBtn.setForeground(Color.WHITE);
+        deleteBtn.setBackground(Color.RED);
+        deleteBtn.setOpaque(true);
+        deleteBtn.setBorderPainted(false);
+
+        buttonPanel.add(newBtn);
+        buttonPanel.add(editBtn);
+        buttonPanel.add(deleteBtn);
+
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(120, 40));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    public void updateTable(List<Persona> personaList) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        for (Persona persona : personaList) {
+            model.addRow(new Object[]{persona.getNome(), persona.getCognome(), persona.getTelefono()});
+        }
     }
 
     public JFrame getFrame() {
@@ -54,6 +87,7 @@ public class MainView {
     }
 
     public void show() {
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
