@@ -1,11 +1,14 @@
 package it.marz.interview.view;
 
 import it.marz.interview.model.persona.Persona;
+import it.marz.interview.utils.LoggerManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 public class MainView {
     private JFrame frame;
@@ -36,9 +39,9 @@ public class MainView {
         //button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
-        newBtn = createButton("Nuovo");
-        editBtn = createButton("Modifica");
-        deleteBtn = createButton("Elimina");
+        newBtn = createButton("Nuovo", "icons/add-user.png");
+        editBtn = createButton("Modifica", "icons/editing.png");
+        deleteBtn = createButton("Elimina", "icons/trash.png");
         deleteBtn.setForeground(Color.WHITE);
         deleteBtn.setBackground(Color.RED);
         deleteBtn.setOpaque(true);
@@ -51,10 +54,20 @@ public class MainView {
         frame.add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private JButton createButton(String text) {
+    private JButton createButton(String text, String iconPath) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(120, 40));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        try {
+            URL iconURL = getClass().getClassLoader().getResource(iconPath);
+            if (iconURL != null) {
+                ImageIcon originalIcon = new ImageIcon(iconURL);
+                Image scaledImage = originalIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+                button.setIcon(new ImageIcon(scaledImage));
+            }
+        } catch (Exception e) {
+            LoggerManager.logInfoException("Impossibile caricare le icone", e);
+        }
         return button;
     }
 

@@ -64,7 +64,6 @@ public class PersonaFS implements PersonaDAO{
 
         } catch (IOException e) {
             LoggerManager.logSevereException("Impossibile scrivere file!", e);
-
         }finally {
             CSVManager.closeCsvWriter(csvWriter);
         }
