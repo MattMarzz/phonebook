@@ -44,12 +44,12 @@ public class EditorController {
         try {
             PersonaDAO personaDAO = new PersonaFS();
             personaDAO.insertPersona(persona);
-            JOptionPane.showMessageDialog(editorView.getFrame(), "Persona salvata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(editorView.getFrame(), "Persona salvata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
             editorView.getFrame().setVisible(false);
             mainView.updateTable(personaDAO.getAllPersona());
         } catch (IOException | ItemAlreadyExistsException e) {
             JOptionPane.showMessageDialog(editorView.getFrame(),
-                    "Ops... Qualcosa non è andato come previsto!", "Errore", JOptionPane.ERROR_MESSAGE);
+                    e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -59,12 +59,12 @@ public class EditorController {
         try {
             PersonaDAO personaDAO = new PersonaFS();
             personaDAO.editPersona(persona);
-            JOptionPane.showMessageDialog(editorView.getFrame(), "Persona modificata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(editorView.getFrame(), "Persona modificata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
             editorView.getFrame().setVisible(false);
             mainView.updateTable(personaDAO.getAllPersona());
-        } catch (IOException e) {
+        } catch (IOException | ItemAlreadyExistsException e) {
             JOptionPane.showMessageDialog(editorView.getFrame(),
-                    "Ops... Qualcosa non è andato come previsto!", "Errore", JOptionPane.ERROR_MESSAGE);
+                    e.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
     }

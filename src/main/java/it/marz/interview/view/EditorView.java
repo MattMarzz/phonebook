@@ -137,7 +137,7 @@ public class EditorView {
             public void focusLost(FocusEvent e) {
                 if (textField.getText().length() != requiredLength) {
                     JOptionPane.showMessageDialog(textField,
-                            "Il numero di telefono deve essere esattamente " + requiredLength + " cifre!",
+                            "Numero di telefono non valido",
                             "Errore", JOptionPane.ERROR_MESSAGE);
                     textField.setText("");
                 }

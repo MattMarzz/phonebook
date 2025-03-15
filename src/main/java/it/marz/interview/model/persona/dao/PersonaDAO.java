@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface PersonaDAO {
 
-        public String insertPersona(Persona persona) throws ItemAlreadyExistsException;
-        public String editPersona(Persona persona);
+        public void insertPersona(Persona persona) throws ItemAlreadyExistsException;
+        public void editPersona(Persona persona) throws ItemAlreadyExistsException;
         public Persona getPersonaById(int id) throws ItemNotFoundException;
         public List<Persona> getAllPersona();
         public void removePersona(Persona persona);

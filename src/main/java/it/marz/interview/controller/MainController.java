@@ -77,8 +77,7 @@ public class MainController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                JOptionPane.showMessageDialog(view.getFrame(),
-                        "Persona eliminata con successo!", "Eliminazione", JOptionPane.INFORMATION_MESSAGE);
+
                 view.updateTable(personaDAO.getAllPersona());
             }
         } else {

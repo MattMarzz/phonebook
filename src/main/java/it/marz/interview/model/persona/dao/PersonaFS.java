@@ -41,27 +41,17 @@ public class PersonaFS implements PersonaDAO{
             if(!isFileCreated) throw new IOException("Impossibile dialogare con il file");
         }
     }
-    //TODO: check nome e cognome in the inser op
+
     @Override
-    public String insertPersona(Persona persona) throws ItemAlreadyExistsException {
-        boolean duplicatedRecordId;
-        Persona p = null;
+    public void insertPersona(Persona persona) throws ItemAlreadyExistsException {
         String[] rcrd;
         CSVWriter csvWriter = null;
-        try {
-            p = getPersonaById(persona.getId());
-            duplicatedRecordId = p != null;
-        } catch (ItemNotFoundException e) {
-            duplicatedRecordId = false;
-        }
-
-        if(duplicatedRecordId) throw new ItemAlreadyExistsException("Persona esistente! Due persone non possono avere lo stesso numero di telefono!");
+        List<Persona> personaList = getPersonaListWithoutClone(persona);
 
         try {
             csvWriter = new CSVWriter(new BufferedWriter(new FileWriter(this.file, true)),  ICSVWriter.DEFAULT_SEPARATOR,
                     ICSVWriter.NO_QUOTE_CHARACTER, ICSVWriter.DEFAULT_ESCAPE_CHARACTER, ICSVWriter.RFC4180_LINE_END);
 
-            List<Persona> personaList = getAllPersona();
             int lastId = 0;
             if(!personaList.isEmpty())
                 lastId = personaList.getLast().getId();
@@ -74,17 +64,34 @@ public class PersonaFS implements PersonaDAO{
 
         } catch (IOException e) {
             LoggerManager.logSevereException("Impossibile scrivere file!", e);
-            return "Errore in inserimento";
 
         }finally {
             CSVManager.closeCsvWriter(csvWriter);
         }
 
-        return "Inserimento effettuato correttamente!";
+    }
+
+    private List<Persona> getPersonaListWithoutClone(Persona persona) throws ItemAlreadyExistsException {
+        List<Persona> personaList = getAllPersona();
+
+        for(Persona p: personaList) {
+            if(p.getNome().equals(persona.getNome()) &&
+                p.getCognome().equals(persona.getCognome()) &&
+                p.getId() != persona.getId()){
+                throw new ItemAlreadyExistsException(persona.getNome().toUpperCase() +
+                        " " + persona.getCognome().toUpperCase() +
+                        " esiste già!");
+            }
+            if(p.getTelefono().equals(persona.getTelefono()) &&
+                    p.getId() != persona.getId()){
+                throw new ItemAlreadyExistsException("Numero di telefono esistente!");
+            }
+        }
+        return personaList;
     }
 
     @Override
-    public String editPersona(Persona persona) {
+    public void editPersona(Persona persona) throws ItemAlreadyExistsException {
         boolean isExistingPerson = false;
         CSVReader csvReader = null;
         CSVWriter csvWriter = null;
@@ -104,17 +111,17 @@ public class PersonaFS implements PersonaDAO{
             }
 
             if(isExistingPerson) {
+                //check for no repetition
+                getPersonaListWithoutClone(persona);
                 csvWriter = new CSVWriter(new BufferedWriter(new FileWriter(this.file, false)),  ICSVWriter.DEFAULT_SEPARATOR,
                         ICSVWriter.NO_QUOTE_CHARACTER, ICSVWriter.DEFAULT_ESCAPE_CHARACTER, ICSVWriter.RFC4180_LINE_END);
                 csvWriter.writeAll(updatedRecords);
                 csvWriter.flush();
-                return "Modifica effettuata!";
-            } else
-                return "Utente non trovato.";
+            }
 
-        } catch (Exception e) {
+        } catch (Exception e ) {
+            if (e instanceof ItemAlreadyExistsException) throw (ItemAlreadyExistsException) e;
             LoggerManager.logSevereException(ConstantMsg.ERROR_OPENING_FILE, e);
-            return "Modifica impossibile";
         } finally {
             CSVManager.closeCsvReader(csvReader);
             CSVManager.closeCsvWriter(csvWriter);
