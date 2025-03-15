@@ -9,7 +9,6 @@ import it.marz.interview.view.EditorView;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
@@ -30,7 +29,8 @@ public class MainController {
         //edit listener
         view.getEditBtn().addActionListener(e -> showEditorForEditPersona(view));
 
-        //TODO: remove listener
+        //remove listener
+        view.getDeleteBtn().addActionListener(e -> removeSelectedPersona(view));
     }
 
     private void showEditorForNewPersona(MainView mainView){
@@ -47,6 +47,43 @@ public class MainController {
             editorController.initEdit(view, loadPersonaList(), editorView);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void removeSelectedPersona(MainView view) {
+        int selectedRow = view.getTable().getSelectedRow();
+        List<Persona> personaList;
+        try {
+            personaList = loadPersonaList();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(view.getFrame(),
+                    "Ops... Qualcosa non è andato come previsto!", "Errore", JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
+        }
+        if (selectedRow != -1) {
+            Persona selectedPersona = personaList.get(selectedRow);
+            int choice = JOptionPane.showConfirmDialog(view.getFrame(),
+                    "Eliminare la persona " + selectedPersona.getNome().toUpperCase() +
+                            " " + selectedPersona.getCognome().toUpperCase() + "?",
+                    "Conferma eliminazione",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                PersonaDAO personaDAO;
+                try {
+                    personaDAO = new PersonaFS();
+                    personaDAO.removePersona(selectedPersona);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                JOptionPane.showMessageDialog(view.getFrame(),
+                        "Persona eliminata con successo!", "Eliminazione", JOptionPane.INFORMATION_MESSAGE);
+                view.updateTable(personaDAO.getAllPersona());
+            }
+        } else {
+            JOptionPane.showMessageDialog(view.getFrame(),
+                    "Seleziona una persona per eliminarla.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
