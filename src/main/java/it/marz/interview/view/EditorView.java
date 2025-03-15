@@ -2,7 +2,9 @@ package it.marz.interview.view;
 
 import it.marz.interview.enums.EditorModeEnum;
 import it.marz.interview.model.persona.Persona;
+import it.marz.interview.utils.LoggerManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -13,6 +15,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URL;
 
 public class EditorView {
     private JFrame frame;
@@ -30,6 +34,15 @@ public class EditorView {
     public EditorView(EditorModeEnum editorModeEnum) {
         this.mode = editorModeEnum;
         frame = new JFrame(this.mode == EditorModeEnum.NEW ? "Inserisci Persona" : "Modifica Persona");
+        try {
+            URL iconURL = MainView.class.getClassLoader().getResource("icons/register.png");
+            if (iconURL != null) {
+                Image icon = ImageIO.read(iconURL);
+                frame.setIconImage(icon);
+            }
+        } catch (IOException e) {
+            LoggerManager.logInfoException(e.getMessage(), e);
+        }
         frame.setSize(600, 350);
         frame.setLayout(new BorderLayout(10, 10));
         frame.setLocationRelativeTo(null);

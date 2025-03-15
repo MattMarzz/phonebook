@@ -3,12 +3,13 @@ package it.marz.interview.view;
 import it.marz.interview.model.persona.Persona;
 import it.marz.interview.utils.LoggerManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 public class MainView {
     private JFrame frame;
@@ -19,6 +20,15 @@ public class MainView {
 
     public MainView() {
         frame = new JFrame("Rubrica");
+        try {
+            URL iconURL = MainView.class.getClassLoader().getResource("icons/register.png");
+            if (iconURL != null) {
+                Image icon = ImageIO.read(iconURL);
+                frame.setIconImage(icon);
+            }
+        } catch (IOException e) {
+            LoggerManager.logInfoException(e.getMessage(), e);
+        }
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout(10, 10));
