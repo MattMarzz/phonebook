@@ -17,6 +17,9 @@ public class EditorController {
         editorView.clearFields();
         editorView.getFrame().setVisible(true);
         editorView.getSaveBtn().addActionListener(e -> savePersona(mainView, editorView));
+        editorView.getCancelBtn().addActionListener(e -> {
+            editorView.getFrame().setVisible(false);
+        });
     }
 
     public void initEdit(MainView view, List<Persona> personaList, EditorView editorView){
@@ -31,6 +34,9 @@ public class EditorController {
             JOptionPane.showMessageDialog(view.getFrame(),
                     "Seleziona una persona per modificarla.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
+        editorView.getCancelBtn().addActionListener(e -> {
+            editorView.getFrame().setVisible(false);
+        });
     }
 
     public void savePersona(MainView mainView, EditorView editorView) {
@@ -62,7 +68,6 @@ public class EditorController {
             throw new RuntimeException(e);
         }
     }
-
 
     public Persona setPersonaFromView(EditorView editorView){
         String nome = editorView.getNome();
