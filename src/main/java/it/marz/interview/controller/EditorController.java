@@ -13,10 +13,10 @@ import java.util.List;
 
 public class EditorController {
 
-    public void initNew(EditorView editorView){
+    public void initNew(MainView mainView, EditorView editorView){
         editorView.clearFields();
         editorView.getFrame().setVisible(true);
-        editorView.getSaveBtn().addActionListener(e -> savePersona(editorView));
+        editorView.getSaveBtn().addActionListener(e -> savePersona(mainView, editorView));
     }
 
     public void initEdit(MainView view, List<Persona> personaList, EditorView editorView){
@@ -26,27 +26,28 @@ public class EditorController {
             //set fields of selected person
             editorView.setPersona(selectedPersona);
             editorView.getFrame().setVisible(true);
-            editorView.getSaveBtn().addActionListener(e -> editPersona(editorView, selectedPersona));
+            editorView.getSaveBtn().addActionListener(e -> editPersona(view, editorView, selectedPersona));
         } else {
             JOptionPane.showMessageDialog(view.getFrame(),
                     "Seleziona una persona per modificarla.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void savePersona(EditorView editorView) {
+    public void savePersona(MainView mainView, EditorView editorView) {
         Persona persona = setPersonaFromView(editorView);
         try {
             PersonaDAO personaDAO = new PersonaFS();
             personaDAO.insertPersona(persona);
             JOptionPane.showMessageDialog(editorView.getFrame(), "Persona salvata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
             editorView.getFrame().setVisible(false);
+            mainView.updateTable(personaDAO.getAllPersona());
         } catch (IOException | ItemAlreadyExistsException e) {
             JOptionPane.showMessageDialog(editorView.getFrame(),
                     "Ops... Qualcosa non è andato come previsto!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void editPersona(EditorView editorView, Persona selectedPersona){
+    public void editPersona(MainView mainView, EditorView editorView, Persona selectedPersona){
         Persona persona = setPersonaFromView(editorView);
         persona.setId(selectedPersona.getId());
         try {
@@ -54,6 +55,7 @@ public class EditorController {
             personaDAO.editPersona(persona);
             JOptionPane.showMessageDialog(editorView.getFrame(), "Persona modificata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
             editorView.getFrame().setVisible(false);
+            mainView.updateTable(personaDAO.getAllPersona());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(editorView.getFrame(),
                     "Ops... Qualcosa non è andato come previsto!", "Errore", JOptionPane.ERROR_MESSAGE);

@@ -1,5 +1,6 @@
 package it.marz.interview.view;
 
+import it.marz.interview.enums.EditorModeEnum;
 import it.marz.interview.model.persona.Persona;
 
 import javax.swing.*;
@@ -12,13 +13,16 @@ public class EditorView {
     private JTextField telefonoField;
     private JTextField indirizzoField;
     private JTextField etaField;
-    private JButton saveBtn;
+    private JButton saveNewBtn;
+    private JButton saveEditBtn;
     private JButton cancelBtn;
+    private EditorModeEnum mode;
 
     //TODO: make input field only numerical
 
-    public EditorView() {
-        frame = new JFrame("Editor Persona");
+    public EditorView(EditorModeEnum editorModeEnum) {
+        this.mode = editorModeEnum;
+        frame = new JFrame(this.mode == EditorModeEnum.NEW ? "Inserisci Persona" : "Modifica Persona");
         frame.setSize(600, 350);
         frame.setLayout(new BorderLayout(10, 10));
         frame.setLocationRelativeTo(null);
@@ -40,22 +44,30 @@ public class EditorView {
         mainPanel.add(createFieldPanel("Età", etaField));
 
         JPanel buttonPanel = new JPanel();
-        saveBtn = new JButton("Salva");
+        if(this.mode == EditorModeEnum.NEW){
+            saveNewBtn = new JButton("Salva");
+            saveNewBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            buttonPanel.add(saveNewBtn);
+        } else{
+            saveEditBtn = new JButton("Salva");
+            saveEditBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            buttonPanel.add(saveEditBtn);
+        }
+
         cancelBtn = new JButton("Annulla");
 
-        saveBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cancelBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cancelBtn.setForeground(Color.WHITE);
         cancelBtn.setBackground(Color.RED);
         cancelBtn.setOpaque(true);
         cancelBtn.setBorderPainted(false);
 
-        buttonPanel.add(saveBtn);
         buttonPanel.add(cancelBtn);
 
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
     }
+
 
     private JPanel createFieldPanel(String labelText, JTextField textField) {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
@@ -101,7 +113,7 @@ public class EditorView {
     }
 
     public JButton getSaveBtn() {
-        return saveBtn;
+        return this.mode == EditorModeEnum.NEW ? saveNewBtn : saveEditBtn;
     }
 
     public JButton getCancelBtn() {

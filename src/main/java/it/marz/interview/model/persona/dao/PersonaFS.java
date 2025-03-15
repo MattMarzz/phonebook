@@ -41,6 +41,7 @@ public class PersonaFS implements PersonaDAO{
             if(!isFileCreated) throw new IOException("Impossibile dialogare con il file");
         }
     }
+    //TODO: check nome e cognome in the inser op
     @Override
     public String insertPersona(Persona persona) throws ItemAlreadyExistsException {
         boolean duplicatedRecordId;
