@@ -15,15 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaFS implements PersonaDAO{
-    private static final String CSV_FILE_NAME;
-
-    static {
-        try {
-            CSV_FILE_NAME = CSVManager.getCsvDir() + "informazioni.txt";
-        } catch (ItemNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final String CSV_FILE_NAME = CSVManager.getCsvDir() + "informazioni.txt";
 
     private final File file;
     private static final int INDEX_ID = 0;

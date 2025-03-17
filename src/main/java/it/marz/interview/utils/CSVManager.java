@@ -11,7 +11,7 @@ import java.util.Properties;
 public class CSVManager {
     private CSVManager(){}
 
-    public static String getCsvDir() throws ItemNotFoundException{
+    public static String getCsvDir() {
         try (InputStream input = CSVManager.class.getClassLoader().getResourceAsStream("application.properties")) {
             if(input == null) throw new ItemNotFoundException("Directory base non trovata");
 
